@@ -10,12 +10,29 @@ Where continent is not null
 order by 1,2
 
 
+
+--What days did the United States have more new vaccines shots than new cases and vice versa
+Select dea.location, dea.date, total_cases, cast(new_cases as int) as NewCases, cast(new_vaccinations as int) as NewVacs,
+	Case
+		When new_cases < new_vaccinations then 'More Vaccinations than Cases'
+		When new_cases > new_vaccinations then 'More Cases than Vaccinations'
+		When new_cases = new_vaccinations then 'Covid Cases = Vaccinations'
+		When new_cases is null then 'Country not infected'
+		When new_vaccinations is null then 'More Cases than Vaccines'
+		else 'NULL'
+	End as 'Vaccine vs Total Cases'
+from CovidDeaths dea
+join CovidVaccinations vac 
+on dea.date = vac.date
+and dea.location = vac.location
+where dea.location like '%states%'
 --Total Cases vs Total Deaths
 --Shows likelihoood of dying if you were to contract covid in the UnitedStates
 select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as 'Death Percentage'
 from PortfolioProjectCovid..CovidDeaths
 where location like '%states'
 order by 1,2
+
 
 
 --Total Cases vs Population
@@ -26,12 +43,14 @@ where location like '%states'
 order by 1,2
 
 
+
 --Countries with highest infection rate when compared to population
 select Location, Population, Max(total_cases) as 'HighestInfectionCount', Max((total_cases/population)*100) as 'PercentInfectedPopulation'
 from PortfolioProjectCovid..CovidDeaths
 --where location like '%states'
 group by location, population
 order by PercentInfectedPopulation desc
+
 
 
 -- Countries with highest death count
@@ -41,6 +60,7 @@ where continent is not null
 group by location, population
 order by HighestDeathCount desc
 
+				      
 
 --BREAKING THINGS DOWN BY CONTINENT
 
@@ -58,9 +78,9 @@ group by location
 order by HighestDeathCount desc
 
 
+			  
 --GLOBAL NUMBERS
-
-
+			  
 --Total Population vs Deaths Percentage
 Select date, SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(New_Cases)*100 as DeathPercentage
 From PortfolioProjectCovid..CovidDeaths
@@ -81,6 +101,7 @@ join CovidVaccinations vac
 where dea.continent is not null
 order by continent, location
 
+		 
 
 --USE CTE to show Vaccinated population percentage
 With PopVsVac (Contintent, Location, Date, Population, new_vaccinations, TotalVacs)
