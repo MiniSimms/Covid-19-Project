@@ -3,7 +3,7 @@ Covid 19 Data Exploration
 Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types, and Data validation
 */
 
--- Select Data that we are going to be starting with
+-- Selecting the data that I am going start with
 Select Location, date, total_cases, new_cases, total_deaths, population
 From PortfolioProjectCovid..CovidDeaths
 Where continent is not null 
@@ -26,6 +26,9 @@ join CovidVaccinations vac
 on dea.date = vac.date
 and dea.location = vac.location
 where dea.location like '%states%'
+
+
+
 --Total Cases vs Total Deaths
 --Shows likelihoood of dying if you were to contract covid in the UnitedStates
 select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as 'Death Percentage'
